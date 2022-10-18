@@ -1643,6 +1643,7 @@
             "name": "四棱椎体追踪目标(RectSensor应用案例)",
             "thumbnail": "graphic-space-rectSensor-lookAt.jpg",
             "main": "graphic/space/rectSensor-lookAt",
+             "hasPannel": true,
             "libs": ["mars3d", "mars3d-space"]
           },
           {

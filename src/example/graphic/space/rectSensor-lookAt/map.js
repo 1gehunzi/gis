@@ -20,6 +20,17 @@ export const mapOptions = {
   }
 }
 
+// 事件对象，用于抛出事件到面板中
+export const eventTarget = new mars3d.BaseClass() // 事件对象，用于抛出事件到面板中
+
+let GEO
+
+let MEO
+
+let IGSO
+
+
+
 /**
  * 初始化地图业务，生命周期钩子函数（必须）
  * 框架在地图初始化完成后自动调用该函数
@@ -50,17 +61,35 @@ function addGraphicLayer() {
   map.addLayer(graphicLayer)
 
   graphicLayer.on(mars3d.EventType.click, function (event) {
-    console.log("单击了卫星", event)
+    console.log("单击了卫星", event.graphic._name)
+    const name = event.graphic._name
+    let weixinType = ""
+    if (name.indexOf("GEO") > -1) {
+      weixinType = "GEO"
+    }
+
+    if (name.indexOf("MEO") > -1) {
+      weixinType = "MEO"
+    }
+
+    if (name.indexOf("IGSO") > -1) {
+      weixinType = "IGSO"
+    }
+
+    console.log(weixinType, "-----------------")
+
+    eventTarget.fire("weixin-change", { weixinType })
   })
   graphicLayer.bindPopup(function (event) {
     const attr = event.graphic.attr || {}
-    attr["类型"] = event.graphic.type
-    attr["备注"] = "我支持鼠标交互"
+    const name = event.graphic._name
+    // attr["类型"] = event.graphic.type
+    attr["备注"] = "请在右上角查看卫星详情数据"
 
-    return mars3d.Util.getTemplateHtml({ title: "卫星图层", template: "all", attr: attr })
+    return mars3d.Util.getTemplateHtml({ title: `${name}卫星图层`, template: "all", attr: attr })
   })
 
-  const weixin = new mars3d.graphic.Satellite({
+   GEO = new mars3d.graphic.Satellite({
     name: "BEIDOU 3 (GEO)",
     tle1: "1 36287U 10001A   22289.93799832 -.00000280  00000+0  00000+0 0  9990",
     tle2: "2 36287   1.7230  48.2117 0000593 265.8062 189.5156  1.00268387 46730",
@@ -100,10 +129,29 @@ function addGraphicLayer() {
       width: 1
     }
   })
-  graphicLayer.addGraphic(weixin)
+  graphicLayer.addGraphic(GEO)
+
+
+  // 显示实时坐标和时间
+  GEO.on(mars3d.EventType.change, (e) => {
+     const weixinData = {}
+      weixinData.name = GEO.name
+      weixinData.tle1 = GEO.options.tle1
+      weixinData.tle2 = GEO.options.tle2
+
+    const date = Cesium.JulianDate.toDate(map.clock.currentTime)
+    weixinData.time = mars3d.Util.formatDate(date, "yyyy-MM-dd HH:mm:ss")
+    if (GEO.position) {
+      const point = mars3d.LngLatPoint.fromCartesian(GEO.position)
+      weixinData.td_jd = point.lng
+      weixinData.td_wd = point.lat
+      weixinData.td_gd = mars3d.MeasureUtil.formatDistance(point.alt)
+      eventTarget.fire("GEO-satelliteChange", { weixinData })
+    }
+  })
 
   // 目标卫星
-  const winxinMB = new mars3d.graphic.Satellite({
+   MEO = new mars3d.graphic.Satellite({
     name: "BEIDOU 15 (MEO)",
     tle1: "1 38775U 12050B   22289.62345197  .00000032  00000+0  00000+0 0  9991",
     tle2: "2 38775  55.4724 107.6074 0011310 333.9961 355.7846  1.86231202 68719",
@@ -144,9 +192,26 @@ function addGraphicLayer() {
     }
   })
 
-  graphicLayer.addGraphic(winxinMB)
+   MEO.on(mars3d.EventType.change, (e) => {
+     const weixinData = {}
+      weixinData.name = MEO.name
+      weixinData.tle1 = MEO.options.tle1
+      weixinData.tle2 = MEO.options.tle2
 
-  const winxinMB2 = new mars3d.graphic.Satellite({
+    const date = Cesium.JulianDate.toDate(map.clock.currentTime)
+    weixinData.time = mars3d.Util.formatDate(date, "yyyy-MM-dd HH:mm:ss")
+    if (MEO.position) {
+      const point = mars3d.LngLatPoint.fromCartesian(MEO.position)
+      weixinData.td_jd = point.lng
+      weixinData.td_wd = point.lat
+      weixinData.td_gd = mars3d.MeasureUtil.formatDistance(point.alt)
+      eventTarget.fire("MEO-satelliteChange", { weixinData })
+    }
+  })
+
+  graphicLayer.addGraphic(MEO)
+
+   IGSO = new mars3d.graphic.Satellite({
     name: "BEIDOU 10 (IGSO)",
     tle1: "1 37948U 11073A   22289.48464623 -.00000127  00000+0  00000+0 0  9992",
     tle2: "2 43539  55.0895 174.6574 0051565 226.9118  89.5096  1.00273436 15721",
@@ -187,7 +252,23 @@ function addGraphicLayer() {
     }
   })
 
-  graphicLayer.addGraphic(winxinMB2)
+ IGSO.on(mars3d.EventType.change, (e) => {
+     const weixinData = {}
+      weixinData.name = IGSO.name
+      weixinData.tle1 = IGSO.options.tle1
+      weixinData.tle2 = IGSO.options.tle2
+
+    const date = Cesium.JulianDate.toDate(map.clock.currentTime)
+    weixinData.time = mars3d.Util.formatDate(date, "yyyy-MM-dd HH:mm:ss")
+    if (IGSO.position) {
+      const point = mars3d.LngLatPoint.fromCartesian(IGSO.position)
+      weixinData.td_jd = point.lng
+      weixinData.td_wd = point.lat
+      weixinData.td_gd = mars3d.MeasureUtil.formatDistance(point.alt)
+      eventTarget.fire("IGSO-satelliteChange", { weixinData })
+    }
+  })
+  graphicLayer.addGraphic(IGSO)
   // 四棱椎体
   // const rectSensor = new mars3d.graphic.RectSensor({
   //   position: new Cesium.CallbackProperty(function (time) {
@@ -207,6 +288,30 @@ function addGraphicLayer() {
 
   // // 追踪目标
   // rectSensor.lookAt = new Cesium.CallbackProperty(function (time) {
-  //   return winxinMB.position
+  //   return MEO.position
   // }, false)
+}
+
+
+// 俯仰角
+export function pitchChange(value) {
+  GEO.pitch = value
+}
+
+// 左右角
+export function rollChange(value) {
+  GEO.roll = value
+}
+
+// export function angle(value) {
+//   weixin.angle1 = value
+//   centerPoint(weixin.angle1)
+// }
+
+export function chkShowModelMatrix(val) {
+  GEO.coneShow = val // 显示关闭视锥体
+}
+
+export function locate() {
+  GEO.flyTo()
 }
