@@ -1,13 +1,5 @@
 <template>
   <mars-dialog :visible="true" right="10" top="10" width="420">
-
-    <div class="f-mb">
-      <a-space>
-        <span class="mars-pannel-item-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;夹角:</span>
-        <mars-slider @change="angle" v-model:value="angleValue" :min="1" :max="60" :step="0.01" />当前值{{ angleValue }}
-      </a-space>
-    </div>
-
     <table class="mars-table tb-border">
       <tr>
         <td class="nametd">名称</td>
@@ -42,13 +34,33 @@
         <td class="nametd">高程</td>
         <td id="td_gd">{{ formState.td_gd }}</td>
       </tr>
+
     </table>
+    <a-form   :label-col="{ span: 3 }" :wrapper-col="{ span: 21 }" style="margin-top: 20px">
+      <a-form-item label="tle2" name="url">
+              <mars-textarea v-model:value="tleData[weixinType]" :allowClear="true" />
+      </a-form-item>
+    </a-form>
+    <div class="f-tac" style="margin-top: 10px">
+      <a-space>
+        <mars-button size="middle" @click="creactCopyWeixin()">
+          生成轨道
+        </mars-button>
+        <mars-button size="middle" @click="removeCopyWeixin()">
+          删除轨道
+        </mars-button>
+        <mars-button size="middle" @click="resetTLE2()"> 重置 TLE2 </mars-button>
+      </a-space>
+    </div>
   </mars-dialog>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed } from "vue"
+import { reactive, ref, computed, h } from "vue"
 import * as mapWork from "./map.js"
+import { $message } from "@mars/components/mars-ui"
+import MarsButton from "@mars/components/mars-ui/mars-button/index.vue"
+import type { GuiItem } from "@mars/components/mars-ui/mars-gui"
 
 interface FormState {
   enabledShowHide: boolean // 参考轴系
@@ -61,17 +73,26 @@ interface FormState {
   td_gd: number
 }
 
+
+
 const infoMaps = {
   GEO: "GEO卫星相对地球静止，轨道高度35786km，轨道倾角为0度，单星覆盖区域较大，3颗卫星可覆盖亚太大部分地区。",
   IGSO: "IGSO卫星轨道高度与GEO卫星相同，轨道倾角为55度，星下点轨迹为“8”字。",
   MEO: "北斗MEO卫星轨道高度约21500km，轨道倾角为55度，绕地球旋转运行，通过多颗卫星组网可实现全球覆盖，北斗MEO星座回归特性为7天13圈。"
 }
 
+const tle2Map = {
+  GEO: "2 36287   1.7230  48.2117 0000593 265.8062 189.5156  1.00268387 46730",
+  IGSO: "2 43539  55.0895 174.6574 0051565 226.9118  89.5096  1.00273436 15721",
+  MEO: "2 38775  55.4724 107.6074 0011310 333.9961 355.7846  1.86231202 68719"
+}
 // 角度
 const angleValue = ref<number>(10)
 const pitchValue = ref<number>(0) // 仰角
 const rollValue = ref<number>(0) // 左右
 const weixinType = ref<string>("GEO")
+
+const tleData = ref({ ...tle2Map })
 
 const meoFormState = reactive<FormState>({
   enabledShowHide: false,
@@ -155,10 +176,19 @@ mapWork.eventTarget.on("weixin-change", (event: any) => {
   weixinType.value = event.weixinType
 })
 // 俯仰角
-const pitchChange = () => {
-  mapWork.pitchChange(pitchValue.value)
+const creactCopyWeixin = () => {
+  mapWork.createWeixin(weixinType.value, tleData.value[weixinType.value])
 }
 
+
+const removeCopyWeixin = () => {
+  mapWork.removeWeixin(weixinType.value)
+}
+
+const resetTLE2 = () => {
+  mapWork.removeWeixin(weixinType.value)
+  tleData.value[weixinType.value] = tle2Map[weixinType.value]
+}
 // 左右角
 const rollChange = () => {
   mapWork.rollChange(rollValue.value)

@@ -1,6 +1,8 @@
+import { Me } from "@icon-park/svg"
 import * as mars3d from "mars3d"
 
 export let map // mars3d.Map三维地图对象
+
 
 // 需要覆盖config.json中地图属性参数（当前示例框架中自动处理合并）
 export const mapOptions = {
@@ -29,7 +31,50 @@ let MEO
 
 let IGSO
 
+const newWeixin = {}
 
+const createSatellite = (name, tle1, tle2) => {
+    return new mars3d.graphic.Satellite({
+    name,
+    tle1,
+    tle2,
+    model: {
+      url: "//data.mars3d.cn/gltf/mars/weixin2.gltf",
+      scale: 1,
+      minimumPixelSize: 90,
+      autoHeading: true,
+      show: true
+    },
+    label: {
+      color: "#ffffff",
+      opacity: 1,
+      font_family: "楷体",
+      font_size: 30,
+      outline: true,
+      outlineColor: "#000000",
+      outlineWidth: 3,
+      background: true,
+      backgroundColor: "#000000",
+      backgroundOpacity: 0.5,
+      font_weight: "normal",
+      font_style: "normal",
+      pixelOffsetX: 0,
+      pixelOffsetY: -20,
+      scaleByDistance: true,
+      scaleByDistance_far: 10000000,
+      scaleByDistance_farValue: 0.4,
+      scaleByDistance_near: 100000,
+      scaleByDistance_nearValue: 1,
+      show: true
+    },
+    path: {
+      show: true,
+      color: "pick",
+      opacity: 0.5,
+      width: 1
+    }
+  })
+}
 
 /**
  * 初始化地图业务，生命周期钩子函数（必须）
@@ -54,10 +99,10 @@ export function onMounted(mapInstance) {
 export function onUnmounted() {
   map = null
 }
-
+const graphicLayer = new mars3d.layer.GraphicLayer()
 function addGraphicLayer() {
   // 创建矢量数据图层
-  const graphicLayer = new mars3d.layer.GraphicLayer()
+  // const graphicLayer = new mars3d.layer.GraphicLayer()
   map.addLayer(graphicLayer)
 
   graphicLayer.on(mars3d.EventType.click, function (event) {
@@ -80,16 +125,16 @@ function addGraphicLayer() {
 
     eventTarget.fire("weixin-change", { weixinType })
   })
-  graphicLayer.bindPopup(function (event) {
-    const attr = event.graphic.attr || {}
-    const name = event.graphic._name
-    // attr["类型"] = event.graphic.type
-    attr["备注"] = "请在右上角查看卫星详情数据"
+  // graphicLayer.bindPopup(function (event) {
+  //   const attr = event.graphic.attr || {}
+  //   const name = event.graphic._name
+  //   // attr["类型"] = event.graphic.type
+  //   attr["备注"] = "请在右上角查看卫星详情数据"
 
-    return mars3d.Util.getTemplateHtml({ title: `${name}卫星图层`, template: "all", attr: attr })
-  })
+  //   return mars3d.Util.getTemplateHtml({ title: `${name}卫星图层`, template: "all", attr: attr })
+  // })
 
-   GEO = new mars3d.graphic.Satellite({
+  GEO = new mars3d.graphic.Satellite({
     name: "BEIDOU 3 (GEO)",
     tle1: "1 36287U 10001A   22289.93799832 -.00000280  00000+0  00000+0 0  9990",
     tle2: "2 36287   1.7230  48.2117 0000593 265.8062 189.5156  1.00268387 46730",
@@ -294,19 +339,38 @@ function addGraphicLayer() {
 
 
 // 俯仰角
-export function pitchChange(value) {
-  GEO.pitch = value
+export function createWeixin(weixinType, tle2) {
+  removeWeixin(weixinType)
+
+  if (weixinType === "MEO") {
+    const newMeo = createSatellite("MEO-NEW", MEO.options.tle1, tle2)
+    graphicLayer.addGraphic(newMeo)
+
+    newWeixin.MEO = newMeo
+  }
+
+  if (weixinType === "GEO") {
+    const newGeo = createSatellite("GEO-NEW", GEO.options.tle1, tle2)
+    graphicLayer.addGraphic(newGeo)
+
+    newWeixin.GEO = newGeo
+  }
+
+  if (weixinType === "IGSO") {
+    const newIGSO = createSatellite("IGSO-NEW", IGSO.options.tle1, tle2)
+    graphicLayer.addGraphic(newIGSO)
+
+    newWeixin.IGSO = newIGSO
+  }
+
 }
 
 // 左右角
-export function rollChange(value) {
-  GEO.roll = value
+export function removeWeixin(weixinType) {
+  console.log(weixinType)
+  graphicLayer.removeGraphic(newWeixin[weixinType], true)
 }
 
-// export function angle(value) {
-//   weixin.angle1 = value
-//   centerPoint(weixin.angle1)
-// }
 
 export function chkShowModelMatrix(val) {
   GEO.coneShow = val // 显示关闭视锥体
