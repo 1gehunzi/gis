@@ -1,0 +1,1 @@
+import{G as a}from"./graphic-layer-state.1409752a.js";import{m as s,r,o as t,q as e,z as o,f as m}from"./common.d35d5a69.js";import"./style.4dfcf88f.js";const d=s({__name:"index",setup:s=>(s,d)=>{const i=r("mars-dialog");return t(),e(i,{visible:!0,right:"10",top:"10"},{default:o((()=>[m(a,{drawLabel1:"绘制直箭头",drawLabel2:"绘制燕尾直箭头"})])),_:1})}});export{d as default};

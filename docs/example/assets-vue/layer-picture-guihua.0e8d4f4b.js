@@ -1,1 +1,0 @@
-import{_ as a,o as s,c as e,p as r,l as c,a as t}from"./common.dccae925.js";const d={},i={class:"layer-pictrue"},l=[(a=>(r("data-v-79ebad57"),a=a(),c(),a))((()=>t("img",{class:"layer-picture_img",src:"/gis/example/assets-vue/guihua.ba2979fa.jpg"},null,-1)))];var o=a(d,[["render",function(a,r){return s(),e("div",i,l)}],["__scopeId","data-v-79ebad57"]]);export{o as default};

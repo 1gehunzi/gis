@@ -1,1 +1,0 @@
-import{_ as a,r,o as t,q as e,z as s,f as i,i as o}from"./common.dccae925.js";var d=a({},[["render",function(a,d){const l=r("mars-button"),n=r("mars-dialog");return t(),e(n,{visible:!0,right:"10",top:"10"},{default:s((()=>[i(l,{href:"editor-vue.html?id=graphic/divGraphic/video-hls",target:"_blank"},{default:s((()=>[o(" 加载HLS视频 ")])),_:1})])),_:1})}]]);export{d as default};
