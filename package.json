@@ -8,7 +8,7 @@
     "clean-cache": "rimraf node_modules/.cache/ && rimraf node_modules/.vite",
     "clean-lib": "rimraf node_modules",
     "preview": "vite preview",
-    "build": "npm run lint && vite build",
+    "build": "vite build",
     "serve:dist": "http-server ./dist",
     "lint": "vue-tsc --noEmit --skipLibCheck && npm run eslint",
     "eslint": "eslint ./src/**/*.{js,vue,ts} --fix",

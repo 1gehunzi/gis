@@ -55,7 +55,8 @@ export default ({ mode }: ConfigEnv) => {
     },
     build: {
       // 输出路径
-      outDir: path.join("./dist", ENV.VITE_BASE_URL),
+      // outDir: path.join("./dist", ENV.VITE_BASE_URL),
+      outDir: "./docs",
       // 默认情况下 若 outDir 在 root 目录下， 则 Vite 会在构建时清空该目录。
       emptyOutDir: true,
       // 静态资源文件生成的目录
