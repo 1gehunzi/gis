@@ -1,0 +1,1 @@
+import{_ as a,o as e,c as s,p as r,l as c,a as t}from"./common.dccae925.js";const l={},o={class:"layer-pictrue"},p=[(a=>(r("data-v-6b8ef74a"),a=a(),c(),a))((()=>t("img",{class:"layer-picture_img",src:"/gis/example/assets-vue/heatmap.59e4898a.png"},null,-1)))];var i=a(l,[["render",function(a,r){return e(),s("div",o,p)}],["__scopeId","data-v-6b8ef74a"]]);export{i as default};

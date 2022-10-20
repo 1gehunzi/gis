@@ -1,1 +1,0 @@
-import{T as s}from"./tile-layer-state.23556611.js";import{m as a,r as t,o as e,q as o,z as r,f as i}from"./common.39edc495.js";const m=a({__name:"index",setup:a=>(a,m)=>{const d=t("mars-dialog");return e(),o(d,{visible:!0,right:"10",top:"10",width:"300"},{default:r((()=>[i(s)])),_:1})}});export{m as default};
