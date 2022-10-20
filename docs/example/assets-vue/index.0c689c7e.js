@@ -1,0 +1,1 @@
+import{G as a}from"./graphic-layer-state.44c88208.js";import{m as t,r as s,o,q as e,z as r,f as i}from"./common.3f7aa84a.js";import"./style.4416799a.js";const m=t({__name:"index",setup:t=>(t,m)=>{const n=s("mars-dialog");return o(),e(n,{visible:!0,right:"10",top:"10"},{default:r((()=>[i(a,{defaultCount:1e3,interaction:!1})])),_:1})}});export{m as default};

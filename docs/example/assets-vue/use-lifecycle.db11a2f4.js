@@ -1,0 +1,1 @@
+import{aw as n,aD as o,aE as a}from"./common.3f7aa84a.js";function t(t){const s=n("getMapInstance");o((()=>{if(t.onMounted){const n=s();t.onMounted(n)}})),a((()=>{t.onUnmounted&&t.onUnmounted()}))}export{t as u};

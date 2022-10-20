@@ -1,0 +1,1 @@
+import{_ as a,o as s,c as e,p as r,l as t,a as c}from"./common.3f7aa84a.js";const l={},o={class:"layer-pictrue"},u=[(a=>(r("data-v-79ebad57"),a=a(),t(),a))((()=>c("img",{class:"layer-picture_img",src:"/example/assets-vue/guihua.ba2979fa.jpg"},null,-1)))];var d=a(l,[["render",function(a,r){return s(),e("div",o,u)}],["__scopeId","data-v-79ebad57"]]);export{d as default};
